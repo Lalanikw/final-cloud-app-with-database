@@ -70,7 +70,7 @@ class Course(models.Model):
 
 # Lesson model
 class Lesson(models.Model):
-    title = models.CharField(max_length=200, default="title")
+    title = models.CharField(max_length=200, default="course_id")
     order = models.IntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     content = models.TextField()
@@ -95,11 +95,19 @@ class Enrollment(models.Model):
     rating = models.FloatField(default=5.0)
 
 class Question(models.Model):
-    lesson = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lesson_questions', related_query_name='lesson_question')
+    lesson = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='lesson_questions',
+        related_query_name='lesson_question'
+    )
     question_text = models.TextField()
-    grade = models.IntegerField()
-    course = models.ManyToManyField(Course, related_name='course_questions', related_query_name='course_question')
-    
+    grade = models.IntegerField(default=0)
+    course = models.ManyToManyField(
+        Course,
+        related_name='course_questions',
+        related_query_name='course_question'
+    )
     # Add other fields as needed
 
     # Sample model method to evaluate if the question was answered correctly

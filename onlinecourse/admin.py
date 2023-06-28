@@ -4,7 +4,6 @@ from .models import Course, Lesson, Instructor, Learner, Choice, Question
 
 # <HINT> Register QuestionInline and ChoiceInline classes here
 
-
 class LessonInline(admin.StackedInline):
     model = Lesson
     extra = 5
