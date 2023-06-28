@@ -20,7 +20,7 @@ class Instructor(models.Model):
     total_learners = models.IntegerField()
 
     def __str__(self):
-        return self.user.username
+        return self.user.username if self.user else "N/A"
 
 
 # Learner model
@@ -95,21 +95,27 @@ class Enrollment(models.Model):
     rating = models.FloatField(default=5.0)
 
 class Question(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lesson_questions', related_query_name='lesson_question')
     question_text = models.TextField()
-    grade_point = models.IntegerField()
+    grade = models.IntegerField()
+    course = models.ManyToManyField(Course, related_name='course_questions', related_query_name='course_question')
+    
     # Add other fields as needed
 
     # Sample model method to evaluate if the question was answered correctly
     def is_get_score(self, selected_ids):
-        correct_choices = self.choice_set.filter(is_correct=True).values_list('id', flat=True)
-        selected_ids = set(selected_ids)
-        return selected_ids == set(correct_choices)
+        all_answers = self.choice_set.filter(is_correct=True).count()
+        selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
+        if all_answers == selected_correct:
+            return True
+        else:
+            return False
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
     choice_text = models.TextField()
-    is_correct = models.BooleanField(default=False)
+    is_correct = models.BooleanField()
+    
 
 # <HINT> Create a Question Model with:
     # Used to persist question content for a course
