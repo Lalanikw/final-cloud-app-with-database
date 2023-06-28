@@ -94,6 +94,22 @@ class Enrollment(models.Model):
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
 
+class Question(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    question_text = models.TextField()
+    grade_point = models.IntegerField()
+    # Add other fields as needed
+
+    # Sample model method to evaluate if the question was answered correctly
+    def is_get_score(self, selected_ids):
+        correct_choices = self.choice_set.filter(is_correct=True).values_list('id', flat=True)
+        selected_ids = set(selected_ids)
+        return selected_ids == set(correct_choices)
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
+    choice_text = models.TextField()
+    is_correct = models.BooleanField(default=False)
 
 # <HINT> Create a Question Model with:
     # Used to persist question content for a course
@@ -128,7 +144,8 @@ class Enrollment(models.Model):
 # One enrollment could have multiple submission
 # One submission could have multiple choices
 # One choice could belong to multiple submissions
-#class Submission(models.Model):
-#    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-#    choices = models.ManyToManyField(Choice)
+
+class Submission(models.Model):
+   enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+   choices = models.ManyToManyField(Choice)
 #    Other fields and methods you would like to design
