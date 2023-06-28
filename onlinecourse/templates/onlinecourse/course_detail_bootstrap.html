@@ -81,13 +81,13 @@
 
             <!--
 
-            A collapse example here:
+            A collapse example here:-->
             <div id="exam" class="collapse">
                 Click to expand elements within the collapse div
-                </div>
+            </div>
 
-            -->
-
+            
+            {% if user.is_authenticated %}
             <!-- <HINT> If user is authenticated, show course exam with a list of question -->
 
             <!-- <HINT> Each example will have many questions -->
@@ -100,14 +100,16 @@
             <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...>
             -->
 
-            <!-- A choice submission form example
-            <form id="questionform" action="point to a submit view" method="post">
-                        ... for each question in the course ...
+            <!-- A choice submission form example-->
+            <div id="exam" class="collapse show">
+            <form id="questionform" action="{% url 'submit' %}" method="post">
+                {% csrf_token %}
+                {% for question in questions %}
                         <div class="card mt-1">
                             <div class="card-header"><h5>{{ question.question_text}}</h5></div>
                             {% csrf_token %}
                             <div class="form-group">
-                               ... for each choice in the question ...
+                                {% for choice in question.choices.all %}
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input type="checkbox" name="choice_{{choice.id}}"
@@ -115,10 +117,14 @@
                                                value="{{choice.id}}">{{ choice.choice_text }}
                                     </label>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
+                        {% endfor %}
                     <input class="btn btn-success btn-block" type="submit" value="Submit">
-            </form> -->
+            </form> 
+        </div>
+        {% endif %}
 
             <!--Check here to see more details Bootstrap checkbox
              https://www.w3schools.com/bootstrap4/bootstrap_forms_inputs.asp-->

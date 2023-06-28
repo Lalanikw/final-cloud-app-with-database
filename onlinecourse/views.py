@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from .models import Course, Enrollment, Question, Choice, Submission
 # <HINT> Import any new Models here
 from .models import Course, Enrollment
 from django.contrib.auth.models import User

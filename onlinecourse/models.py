@@ -87,12 +87,11 @@ class Enrollment(models.Model):
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
 
+
+#Question model
 class Question(models.Model):
     lesson = models.ForeignKey(
-        Course,
-        on_delete=models.CASCADE,
-        related_name='lesson_questions',
-        related_query_name='lesson_question'
+        'Lesson', on_delete=models.CASCADE,
     )
     question_text = models.TextField()
     grade = models.IntegerField(default=0)
@@ -111,12 +110,19 @@ class Question(models.Model):
         else:
             return False
 
+class QuestionCourse(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"QuestionCourse {self.pk}"
+
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
     choice_text = models.TextField()
     is_correct = models.BooleanField() 
 
- class Submission(models.Model):
+class Submission(models.Model):
    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
    choices = models.ManyToManyField(Choice)
 #    Other fields and methods you would like to design
