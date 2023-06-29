@@ -90,7 +90,7 @@ class Enrollment(models.Model):
 
 #Question model
 class Question(models.Model):
-    course = models.ForeignKey(
+    course_id = models.ForeignKey(
         Course, on_delete=models.CASCADE, default=1
     )
     lesson_id = models.ForeignKey(
