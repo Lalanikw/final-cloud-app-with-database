@@ -90,16 +90,17 @@ class Enrollment(models.Model):
 
 #Question model
 class Question(models.Model):
-    lesson = models.ForeignKey(
-        'Lesson', on_delete=models.CASCADE,
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, default=1
+    )
+    lesson_id = models.ForeignKey(
+        Lesson, on_delete=models.CASCADE, default=1
     )
     question_text = models.TextField()
     grade = models.IntegerField(default=0)
-    course = models.ManyToManyField(
-        Course,
-        related_name='course_questions',
-        related_query_name='course_question'
-    )
+    #course = models.ManyToManyField(
+       # Course, related_name='course_questions', related_query_name='course_question'
+    #)
 
     # Sample model method to evaluate if the question was answered correctly
     def is_get_score(self, selected_ids):
@@ -115,7 +116,16 @@ class QuestionCourse(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"QuestionCourse {self.pk}"
+        return f"{self.question} - {self.course}"
+
+class QuestionLesson(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.question} - {self.lesson}"
+    
+    #choice
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
